@@ -1,0 +1,59 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "path": "endometriose-blog-header-images",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        208
+      ],
+      "id": "6a9a4dfa-69e8-47ed-b22c-4e877f3deb64",
+      "webhookId": "07d1a112-eb8b-46bf-972a-b595183fcdcd"
+    },
+    {
+      "parameters": {
+        "jsCode": "const titles = [\n  \"Yselty® – Neu zugelassener Wirkstoff bei Endometriose\",\n  \"Neues in der Endometriose-Behandlung: Die Relugolix-Kombinationstherapie\",\n  \"Speicheltest für Endometriose: Das sagen die kritischen Stimmen\",\n  \"Früherkennung bei Endometriose\",\n  \"Umweltfaktoren, Genetik und ihre Rolle bei Endometriose\",\n  \"Autoimmunerkrankungen und Endometriose\",\n  \"Endometriose und Fatigue: Mehr als „Ich bin auch manchmal müde“\",\n  \"Woher kommt Endometriose?\",\n  \"Die Rolle von Fusobakterien bei der Entstehung von Endometriose\",\n  \"Trans-Fettsäuren in der Ernährung bei Endometriose\"\n];\n\nconst baseStyle = \"Modern health-tech vector illustration. Deep magenta, muted teal, soft pale pink. Minimalist, empathetic, text-free. Concept: \";\n\n// 1. Drop your publishable key here (MUST start with pk_)\nconst apiKey = \"pk_API_KEY_HERE\"; \n\nreturn titles.map(title => {\n  const prompt = encodeURIComponent(baseStyle + title);\n  \n  // 2. Note the new 'gen.pollinations.ai/image' endpoint and the '&key=' parameter\n  const imageUrl = `https://gen.pollinations.ai/image/${prompt}?model=flux&width=1024&height=576&nologo=true&key=${apiKey}`;\n  \n  return { json: { title, imageUrl } };\n});"
+      },
+      "name": "Format Pollinations URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        208
+      ],
+      "id": "1f4482be-7d97-4549-af7e-f3b46284aba1"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Format Pollinations URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Pollinations URLs": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2205c4e6117c0e85003d8e75c8918c045222399c9906a41610eeb6ac4ac6e75c"
+  }
+}
