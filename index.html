@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endometriose-App Blog Image Generator</title>
+    <style>
+        :root {
+            --primary: #AF004F; 
+            --secondary: #429488; 
+            --bg: #FBF4F6; 
+            --card-bg: #FFFFFF;
+            --text: #2B2D42;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        p.subtitle {
+            text-align: center;
+            opacity: 0.7;
+            margin-bottom: 3rem;
+            color: var(--primary);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(175, 0, 79, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-top: 4px solid var(--secondary);
+        }
+        .card h3 {
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            min-height: 45px;
+            color: var(--primary);
+        }
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .loading-container {
+            text-align: center;
+            padding: 3rem;
+        }
+        .loading {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            font-weight: 500;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        .spinner {
+            border: 4px solid rgba(175, 0, 79, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Endometriose Blog Image Automation</h1>
+    <p class="subtitle">Generating consistent, brand-aligned headers, leveraging n8n and image generation APIs.</p>
+    
+    <div id="gallery">
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <div class="loading">Triggering n8n workflow... Generating 10 images (this takes a minute).</div>
+        </div>
+    </div>
+
+    <script>
+        // n8n webhook url, to send requests to
+        const N8N_WEBHOOK_URL = "https://kankeujobs.app.n8n.cloud/webhook/endometriose-blog-header-images";
+        const container = document.getElementById('gallery');
+
+        // Fetch the generated images
+        fetch(N8N_WEBHOOK_URL, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            container.innerHTML = '<div class="grid"></div>';
+            const grid = container.querySelector('.grid');
+
+            // Loop through the array returned by n8n
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                // n8n returns an object with 'title' and 'imageUrl'. Just read and display the values
+                card.innerHTML = `
+                    <h3>${item.title || 'Blog Post'}</h3>
+                    <img src="${item.imageUrl}" alt="${item.title}">
+                `;
+                grid.appendChild(card);
+            });
+        })
+        .catch(err => {
+            container.innerHTML = `<div style="color: red; text-align: center;">Error connecting to n8n: ${err.message}</div>`;
+            console.error('n8n Fetch Error:', err);
+        });
+    </script>
+</body>
+</html>
